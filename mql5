@@ -1,0 +1,66 @@
+mql5
+// Structure Breakout EA MT4
+// Developed by [developer name]
+
+// This EA trades based on the structure breakout strategy, identifying and capturing trend breakouts in the Forex market.
+
+// Input parameters
+extern string Symbol = 'EURUSD'; // Currency pair
+extern int Timeframe = PERIOD_H1; // Timeframe
+extern double RiskPercentage = 2.0; // Risk percentage per trade
+extern int StopLoss = 50; // Stop loss in pips
+
+// Global variables
+double LotSize;
+int MagicNumber = 12345;
+
+// Initialization function
+void OnInit()
+{
+    // Calculate lot size based on risk percentage
+    LotSize = AccountBalance() * RiskPercentage / 100.0 / (MarketInfo(Symbol, MODE_TICKVALUE) * MarketInfo(Symbol, MODE_TICKSIZE));
+}
+
+// Start function
+void OnStart()
+{
+    // Check for market consolidation periods
+    bool isConsolidation = IsConsolidationPeriod(Symbol, Timeframe);
+
+    if (isConsolidation)
+    {
+        // Detect structure breakouts
+        double breakoutLevel = DetectBreakoutLevel(Symbol, Timeframe);
+
+        // Calculate entry and exit points
+        double entryPrice = breakoutLevel + StopLoss * Point;
+        double takeProfit = breakoutLevel - StopLoss * Point;
+
+        // Buy trade
+        int ticket = OrderSend(Symbol, OP_BUY, LotSize, entryPrice, 0, takeProfit, entryPrice + StopLoss * Point, 'Structure Breakout EA', MagicNumber, 0, clrGreen);
+
+        if (ticket > 0)
+        {
+            // Trade executed successfully
+            Print('Buy trade executed successfully');
+        }
+        else
+        {
+            // Trade execution failed
+            Print('Buy trade execution failed. Error code:', GetLastError());
+        }
+    }
+}
+
+// Function to check for market consolidation periods
+bool IsConsolidationPeriod(string symbol, int timeframe)
+{
+    // Implement logic to identify consolidation periods
+}
+
+// Function to detect structure breakouts
+double DetectBreakoutLevel(string symbol, int timeframe)
+{
+    // Implement logic to detect structure breakouts
+}
+
